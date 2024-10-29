@@ -8,11 +8,32 @@ var map = L.map('map', {
     easeLinearity: 0.25 
 });
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 6,
-    minZoom: 4,
-    initZoom: 4,
-    attribution: '&copy; OpenStreetMap contributors'
+function adicionarBanda(bandaNome) {
+    const imageUrl = `imagens/${bandaNome}`; // Caminho da imagem
+    const imageBounds = [[-60.0, -100.0], [30.0, -10.0]]; // Ajuste conforme necessário
+    console.log('Adicionando banda: ', bandaNome);
+    
+    // Adiciona a imagem overlay
+    const overlay = L.imageOverlay(imageUrl, imageBounds).addTo(map);
+    console.log('Overlay adicionado: ', overlay);
+    
+    // Ajusta o mapa para os limites da imagem
+    map.fitBounds(imageBounds);
+}
+
+
+// adicionarBanda('banda1_amazonia.png')
+
+// L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+//     maxZoom: 6,
+//     minZoom: 4,
+//     initZoom: 4,
+//     attribution: '&copy; OpenStreetMap contributors'
+// }).addTo(map);
+
+L.tileLayer('./tiles/{z}/{x}/{y}.png', {
+    maxZoom: 5, // Ajuste conforme o zoom máximo gerado
+    attribution: 'Tiles &copy; OpenStreetMap contributors'
 }).addTo(map);
 
 var southWest = L.latLng(-60.0, -100.0); // Coordenadas do canto sudoeste
@@ -20,7 +41,6 @@ var northEast = L.latLng(30.0, -10.0); // Coordenadas do canto nordeste
 var bounds = L.latLngBounds(southWest, northEast);
 
 map.setMaxBounds(bounds); // Aplica os limites máximos
-console.log('Limites definidos:', map);
 
 
 // Desativa a movimentação do mapa além dos limites
@@ -52,7 +72,6 @@ function showPolygons() {
     drawnItems.eachLayer(function(layer) {
       if (layer instanceof L.Polygon) {
         var coordinates = layer.getLatLngs(); // Obter as coordenadas do polígono
-        console.log("Coordenadas do polígono:", coordinates);
       }
     });
   }
@@ -65,7 +84,6 @@ map.on('dragend', function() {
 map.on(L.Draw.Event.CREATED, function (event) {
     var layer = event.layer;
     drawnItems.addLayer(layer); // Adiciona o polígono ao grupo de itens desenhados
-    console.log('Poligono criado')
     showPolygons();
 
 });
