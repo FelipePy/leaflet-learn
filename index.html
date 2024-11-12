@@ -103,8 +103,21 @@
             </h2>
         </div>
         <div id="map">
-            
+            <div class="opacity-control">
+                <label for="borders">Opacidade das bordas do Brasil:</label>
+                <input type="checkbox" id="borders">
+                <br>
+                <label for="opacity1">Opacidade Camada 1:</label>
+                <input type="range" id="opacity1" min="0" max="1" step="0.1" value="0.7">
+                <br>
+                <label for="opacity2">Opacidade Camada 2:</label>
+                <input type="range" id="opacity2" min="0" max="1" step="0.1" value="0.5">
+                <label for="opacity3">Opacidade Camada 3:</label>
+                <input type="range" id="opacity3" min="0" max="1" step="0.1" value="0.7">
+                <br>
+            </div>
         </div>
+        
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"

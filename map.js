@@ -21,7 +21,18 @@ var map = L.map('map', {
 // }
 
 
-// adicionarBanda('banda1_amazonia.png')
+const borders = fetch('brazil_borders.geojson')
+    .then(response => response.json())
+    .then(data => {
+        L.geoJSON(data, {
+            style: {
+                color: "black",
+                weight: 2,
+                opacity: 1.0
+            },
+            attribution: "borders"
+        }).addTo(map);
+    });
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 5,
@@ -31,28 +42,36 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     noWrap: true // Impede que os tiles desapareçam
 }).addTo(map);
 
-const tiles1 = L.tileLayer('./tiles/{z}/{x}/{y}.png', {
-    tms: true, // Defina para true se o seu tile estiver no formato TMS
+const tiles1 = L.tileLayer('./tiles/goes16/{z}/{x}/{y}.png', {
+    tms: true, 
     opacity: 1,
-    attribution: 'Tiles &copy; OpenStreetMap contributors',
     maxZoom: 5,
     minZoom: 4,
-    noWrap: true // Impede que os tiles desapareçam
+    noWrap: true, 
+    attribution: "opacity1"
 }).addTo(map);
 
-const tiles2 = L.tileLayer('./tiles/{z}/{x}/{y}.png', {
-    tms: true, // Defina para true se o seu tile estiver no formato TMS
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+const tiles2 = L.tileLayer('./tiles/rgb/{z}/{x}/{y}.png', {
+    tms: true, 
     maxZoom: 5,
     minZoom: 4,
     opacity: 1,
-    noWrap: true // Impede que os tiles desapareçam
-});
+    noWrap: true,
+    attribution: "opacity2"
+}).addTo(map);
 
-const baseMaps = {
-    "Custom Tiles": tiles1,
-    "OpenStreetMap": tiles2,
-};
+const tiles3 = L.tileLayer('./tiles/web_prev030/{z}/{x}/{y}.png', {
+    tms: true, 
+    maxZoom: 5,
+    minZoom: 4,
+    opacity: 1,
+    noWrap: true,
+    attribution: "opacity3"
+}).addTo(map);
+
+// const baseMaps = {
+//     "Custom Tiles": tiles1, tiles2,
+// };
 
 // L.control.layers(baseMaps).addTo(map);
 
@@ -62,6 +81,27 @@ var northEast = L.latLng(30.0, -15.9253); // Coordenadas do canto nordeste
 var bounds = L.latLngBounds(southWest, northEast);
 
 map.setMaxBounds(bounds); // Aplica os limites máximos
+
+// Atualizar opacidade das camadas com sliders
+document.getElementById('opacity1').addEventListener('input', function(event) {
+    const opacity = parseFloat(event.target.value);
+    tiles1.setOpacity(opacity);
+});
+
+document.getElementById('opacity2').addEventListener('input', function(event) {
+    const opacity = parseFloat(event.target.value);
+    tiles2.setOpacity(opacity);
+});
+
+document.getElementById('opacity3').addEventListener('input', function(event) {
+    const opacity = parseFloat(event.target.value);
+    tiles3.setOpacity(opacity);
+});
+
+document.getElementById('borders').addEventListener('input', function(event) {
+    console.log(event.isTrusted);
+    event.target.value = event.target.value
+});
 
 
 // Desativa a movimentação do mapa além dos limites
